@@ -1,5 +1,6 @@
 import streamlit as st
 import pandas as pd
+import base64
 
 url = 'https://ckan.open-governmentdata.org/dataset/aad66771-0e86-4d38-b08e-7b74d31f442e/resource/111b9476-bc80-4700-9551-3ba8a4ffcebc/download/401005_kitakyushu_covid19_patients.csv'
 data = pd.read_csv(url, encoding='cp932')
@@ -19,3 +20,7 @@ if unknown_count == 0:
 else:
     st.markdown(f'### {selected} 列には{unknown_count}件の欠損値がありました')
     st.dataframe(selected_data)
+    csv = selected_data.to_csv(index=False)
+    b64 = base64.b64encode(csv.encode()).decode()
+    href = f'<a download="欠損値_{selected}.csv" href="data:file/csv;base64,{b64}">結果をダウンロード(csv)</a>'
+    st.markdown(href, unsafe_allow_html=True)
